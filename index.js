@@ -18,7 +18,7 @@ if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
 
 const app = express();
 mongoose.set("strictQuery", true);
-mongoose.connect("mongodb://localhost:27017/SDP1", {
+mongoose.connect("mongodb+srv://user:123@cluster0.ddtv2.mongodb.net/SDP2", {
  
 });
 var db = mongoose.connection;
