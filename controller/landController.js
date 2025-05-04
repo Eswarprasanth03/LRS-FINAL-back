@@ -629,9 +629,6 @@ landRoute.get("/transfer-requests", async (req, res) => {
 
 // Process transfer request
 landRoute.post("/process-transfer/:requestId", async (req, res) => {
-  if (action === 'approve') {
-    transferRequest.completedAt = new Date(); // <-- Add this line
-  }
   try {
     const { requestId } = req.params;
     const { action, sellerPhoto, buyerPhoto, verificationDate, comments } = req.body;
@@ -660,6 +657,10 @@ landRoute.post("/process-transfer/:requestId", async (req, res) => {
     transferRequest.status = action === 'approve' ? 'completed' : 'rejected';
     transferRequest.verificationDate = verificationDate;
     transferRequest.verificationComments = comments;
+
+    if (action === 'approve') {
+      transferRequest.completedAt = new Date();
+    }
 
     if (sellerPhotoBuffer) {
       transferRequest.sellerVerificationPhoto = {

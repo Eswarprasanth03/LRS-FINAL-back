@@ -18,9 +18,8 @@ if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
 
 const app = express();
 mongoose.set("strictQuery", true);
-mongoose.connect("mongodb+srv://user:123@cluster0.ddtv2.mongodb.net/SDP", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+mongoose.connect("mongodb://localhost:27017/SDP1", {
+ 
 });
 var db = mongoose.connection;
 db.on("open", () => console.log("connected to db"));

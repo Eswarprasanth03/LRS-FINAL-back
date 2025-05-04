@@ -1,5 +1,6 @@
 const express = require("express");
 const multer = require("multer");
+const bcrypt = require("bcrypt");
 const buyerModel = require("../model/buyerModel");
 const buyerRoute = express.Router();
 
@@ -32,7 +33,7 @@ buyerRoute.post(
       const newBuyer = new buyerModel({
         name,
         email,
-        password,
+        password, // Store plain password for now
         phoneNumber,
         location,
         governmentId,
@@ -154,6 +155,36 @@ buyerRoute.get("/verification-status/:id", async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Update password endpoint
+buyerRoute.post("/update-password", async (req, res) => {
+  try {
+    const { userId, currentPassword, newPassword } = req.body;
+
+    if (!userId || !currentPassword || !newPassword) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const buyer = await buyerModel.findById(userId);
+    if (!buyer) {
+      return res.status(404).json({ message: "Buyer not found" });
+    }
+
+    // Compare current password directly since it's stored as plain text
+    if (currentPassword !== buyer.password) {
+      return res.status(401).json({ message: "Current password is incorrect" });
+    }
+
+    // Update password (still as plain text for now)
+    buyer.password = newPassword;
+    await buyer.save();
+
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error updating password:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
